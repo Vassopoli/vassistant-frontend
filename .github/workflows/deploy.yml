@@ -32,6 +32,7 @@ jobs:
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           AWS_ROLE_TO_ASSUME: op://Service Account Vault/IAM Role DeployVassistant/credential
+          CLOUDFRONT_DISTRIBUTION_ID: op://Service Account Vault/Cloudfront/credential
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -41,3 +42,6 @@ jobs:
 
       - name: Deploy to S3
         run: aws s3 sync ./out s3://vassistant.vassopoli.com --delete
+
+      - name: Invalidate CloudFront
+        run: aws cloudfront create-invalidation --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
