@@ -27,17 +27,16 @@ jobs:
         run: npm run build
 
       - name: Load AWS Role ARN from 1Password
-        uses: 1password/load-secrets-action@v1
-        with:
-          secrets: |
-            AWS_ROLE_TO_ASSUME: op://Service Account Vault/IAM Role DeployVassistant/credential
+        id: load_secrets
+        uses: 1password/load-secrets-action@v3
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          AWS_ROLE_TO_ASSUME: op://Service Account Vault/IAM Role DeployVassistant/credential
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-to-assume: ${{ steps.load_secrets.outputs.AWS_ROLE_TO_ASSUME }}
           aws-region: us-east-1
 
       - name: Deploy to S3
