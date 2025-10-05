@@ -8,9 +8,9 @@ const Navbar = () => {
           <Link href="/">MyApp</Link>
         </div>
         <div className="space-x-4">
-          <Link href="/" className="text-gray-300 hover:text-white">Home</Link>
-          <Link href="/about" className="text-gray-300 hover:text-white">About</Link>
-          <Link href="/contact" className="text-gray-300 hover:text-white">Contact</Link>
+          <Link href="/" className="text-gray-300 hover:text-white">home</Link>
+          <Link href="/message" className="text-gray-300 hover:text-white">message</Link>
+          <Link href="/financial" className="text-gray-300 hover:text-white">financial</Link>
         </div>
       </div>
     </nav>
