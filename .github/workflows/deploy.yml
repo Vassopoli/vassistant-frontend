@@ -47,9 +47,18 @@ jobs:
         run: |
           cp -r public .next/standalone/
           cp -r .next/static .next/standalone/.next/
-          mv .next/standalone/server.js .next/standalone/index.js
+          echo -e '#!/bin/bash\nexec node server.js' > .next/standalone/run.sh
+          chmod +x .next/standalone/run.sh
           cd .next/standalone
           zip -r ../../deployment.zip .
+
+      - name: Update Lambda Configuration
+        run: |
+          aws lambda update-function-configuration \
+            --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} \
+            --handler run.sh \
+            --layers "arn:aws:lambda:us-east-1:753240598075:layer:LambdaAdapterLayerX86:25" \
+            --environment '{"Variables":{"AWS_LAMBDA_EXEC_WRAPPER":"/opt/bootstrap","API_ENDPOINT":"${{ steps.load_secrets.outputs.API_ENDPOINT }}"}}'
 
       - name: Deploy to Lambda
         run: aws lambda update-function-code --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} --zip-file fileb://deployment.zip
