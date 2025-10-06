@@ -27,6 +27,7 @@ jobs:
           op-cli-version: "v2.24.0"
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          API_ENDPOINT: op://Service Account Vault/VassistantApiEndpoint/credential
           AWS_ROLE_TO_ASSUME: op://Service Account Vault/IAM Role DeployVassistant/credential
           CLOUDFRONT_DISTRIBUTION_ID: op://Service Account Vault/VassistantCloudFront/credential
 
@@ -39,8 +40,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Deploy with Serverless
-        run: npm run deploy
+      - name: Build
+        run: npm run build
+
+      - name: Deploy with SST
+        run: npm run deploy -- --stage prod
+        env:
+          API_ENDPOINT: ${{ steps.load_secrets.outputs.API_ENDPOINT }}
 
       - name: Invalidate CloudFront
         run: aws cloudfront create-invalidation --distribution-id ${{ steps.load_secrets.outputs.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
