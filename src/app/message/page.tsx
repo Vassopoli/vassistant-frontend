@@ -10,7 +10,6 @@ const MessagePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // We fetch from the local proxy, which is handled by the Next.js server
         const response = await fetch('/api/proxy');
         if (!response.ok) {
           throw new Error('Network response was not ok');
