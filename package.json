@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "start:lambda": "node .next/standalone/server.js"
+    "start:lambda": "node .next/standalone/server.js -p $PORT"
   },
   "dependencies": {
     "next": "14.2.4",
