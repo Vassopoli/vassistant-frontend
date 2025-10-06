@@ -13,29 +13,22 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
-
-      - name: Install dependencies
-        run: npm install
 
       - name: Load Secrets from 1Password
         id: load_secrets
         uses: 1password/load-secrets-action@v3
+        with:
+          op-cli-version: "v2.24.0"
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          API_ENDPOINT: op://Service Account Vault/VassistantApiEndpoint/credential
           AWS_ROLE_TO_ASSUME: op://Service Account Vault/IAM Role DeployVassistant/credential
           CLOUDFRONT_DISTRIBUTION_ID: op://Service Account Vault/VassistantCloudFront/credential
-
-      - name: Build
-        run: npm run build
-        env:
-          API_ENDPOINT: ${{ steps.load_secrets.outputs.API_ENDPOINT }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -43,25 +36,11 @@ jobs:
           role-to-assume: ${{ steps.load_secrets.outputs.AWS_ROLE_TO_ASSUME }}
           aws-region: us-east-1
 
-      - name: Package for Lambda
-        run: |
-          cp -r public .next/standalone/
-          cp -r .next/static .next/standalone/.next/
-          echo -e '#!/bin/bash\nexec node server.js' > .next/standalone/run.sh
-          chmod +x .next/standalone/run.sh
-          cd .next/standalone
-          zip -r ../../deployment.zip .
+      - name: Install dependencies
+        run: npm install
 
-      - name: Update Lambda Configuration
-        run: |
-          aws lambda update-function-configuration \
-            --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} \
-            --handler run.sh \
-            --layers "arn:aws:lambda:us-east-1:753240598075:layer:LambdaAdapterLayerX86:25" \
-            --environment '{"Variables":{"AWS_LAMBDA_EXEC_WRAPPER":"/opt/bootstrap","API_ENDPOINT":"${{ steps.load_secrets.outputs.API_ENDPOINT }}"}}'
-
-      - name: Deploy to Lambda
-        run: aws lambda update-function-code --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} --zip-file fileb://deployment.zip
+      - name: Deploy with Serverless
+        run: npm run deploy
 
       - name: Invalidate CloudFront
         run: aws cloudfront create-invalidation --distribution-id ${{ steps.load_secrets.outputs.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
