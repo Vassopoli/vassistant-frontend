@@ -2,12 +2,14 @@
 const nextConfig = {
   output: 'standalone',
   async rewrites() {
-    return [
-      {
+    const rewrites = [];
+    if (process.env.API_ENDPOINT) {
+      rewrites.push({
         source: '/api/proxy',
         destination: process.env.API_ENDPOINT,
-      },
-    ]
+      });
+    }
+    return rewrites;
   },
 };
 
