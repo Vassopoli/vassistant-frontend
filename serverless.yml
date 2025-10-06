@@ -1,0 +1,44 @@
+service: nextjs-lambda
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  region: us-east-1
+  ecr:
+    images:
+      app:
+        path: ./
+
+functions:
+  next:
+    image:
+      name: app
+    handler: lambda-handler.handler
+    url: true
+    timeout: 30
+    memorySize: 1024
+    environment:
+      NODE_ENV: production
+      API_ENDPOINT:
+        Fn::Join:
+          - ''
+          - - 'https://'
+            - Ref: 'ApiGatewayRestApi'
+            - '.execute-api.us-east-1.amazonaws.com'
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - lambda:InvokeFunction
+          - lambda:InvokeAsync
+        Resource: '*'
+
+package:
+  individually: true
+  patterns:
+    - '!node_modules/**'
+    - '!.next/cache/**'
+
+custom:
+  serverless-offline:
+    httpPort: 4000
+    lambdaPort: 4002
