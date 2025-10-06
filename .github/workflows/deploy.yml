@@ -1,4 +1,4 @@
-name: Deploy to S3
+name: Deploy to Lambda
 
 on:
   push:
@@ -43,8 +43,15 @@ jobs:
           role-to-assume: ${{ steps.load_secrets.outputs.AWS_ROLE_TO_ASSUME }}
           aws-region: us-east-1
 
-      - name: Deploy to S3
-        run: aws s3 sync ./out s3://vassistant.vassopoli.com --delete
+      - name: Package for Lambda
+        run: |
+          cp -r public .next/standalone/
+          cp -r .next/static .next/standalone/.next/
+          cd .next/standalone
+          zip -r ../../deployment.zip .
+
+      - name: Deploy to Lambda
+        run: aws lambda update-function-code --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} --zip-file fileb://deployment.zip
 
       - name: Invalidate CloudFront
         run: aws cloudfront create-invalidation --distribution-id ${{ steps.load_secrets.outputs.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
