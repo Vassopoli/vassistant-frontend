@@ -47,6 +47,7 @@ jobs:
         run: |
           cp -r public .next/standalone/
           cp -r .next/static .next/standalone/.next/
+          mv .next/standalone/server.js .next/standalone/index.js
           cd .next/standalone
           zip -r ../../deployment.zip .
 
