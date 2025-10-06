@@ -23,16 +23,19 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build
-        run: npm run build
-
-      - name: Load AWS Role ARN from 1Password
+      - name: Load Secrets from 1Password
         id: load_secrets
         uses: 1password/load-secrets-action@v3
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          API_ENDPOINT: op://Service Account Vault/VassistantApiEndpoint/credential
           AWS_ROLE_TO_ASSUME: op://Service Account Vault/IAM Role DeployVassistant/credential
           CLOUDFRONT_DISTRIBUTION_ID: op://Service Account Vault/VassistantCloudFront/credential
+
+      - name: Build
+        run: npm run build
+        env:
+          API_ENDPOINT: ${{ steps.load_secrets.outputs.API_ENDPOINT }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
