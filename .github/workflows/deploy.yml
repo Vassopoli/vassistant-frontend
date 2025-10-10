@@ -44,9 +44,32 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Deploy with SST
-        run: npm run deploy -- --stage prod
+      - name: Deploy with SST and capture output
+        id: deploy
+        run: npm run deploy -- --stage prod &> deploy_output.txt
         env:
           API_ENDPOINT: ${{ steps.load_secrets.outputs.API_ENDPOINT }}
           DOMAIN_NAME: ${{ steps.load_secrets.outputs.DOMAIN_NAME }}
           HOSTED_ZONE: ${{ steps.load_secrets.outputs.HOSTED_ZONE }}
+
+      - name: Mask sensitive output
+        run: |
+          output=$(cat deploy_output.txt)
+          site_url=$(echo "$output" | grep 'SiteUrl' | awk '{print $2}')
+          account_id_arn=$(echo "$output" | grep -oP 'arn:aws:iam::\K[0-9]+' | head -n 1)
+          account_id_direct=$(echo "$output" | grep 'Account:' | awk '{print $2}')
+          if [[ ! -z "$site_url" ]]; then
+            echo "::add-mask::$site_url"
+          fi
+          if [[ ! -z "$account_id_arn" ]]; then
+            echo "::add-mask::$account_id_arn"
+          fi
+          if [[ ! -z "$account_id_direct" ]]; then
+            echo "::add-mask::$account_id_direct"
+          fi
+          echo "Deployment output:"
+          cat deploy_output.txt
+
+      - name: Clean up temporary file
+        if: always()
+        run: rm deploy_output.txt
