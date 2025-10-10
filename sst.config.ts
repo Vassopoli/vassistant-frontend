@@ -11,6 +11,13 @@ export default {
   stacks(app) {
     app.stack(function Site({ stack }) {
       const site = new NextjsSite(stack, "VassistantFrontendSite", {
+        customDomain:
+          process.env.DOMAIN_NAME && process.env.HOSTED_ZONE
+            ? {
+                domainName: process.env.DOMAIN_NAME,
+                hostedZone: process.env.HOSTED_ZONE,
+              }
+            : undefined,
         environment: {
           API_ENDPOINT: process.env.API_ENDPOINT || "",
         },
