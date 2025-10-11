@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import { getTokens } from 'aws-amplify/auth';
+import { withAuthenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
 
 const MessagePage = () => {
   const [data, setData] = useState(null);
@@ -10,7 +13,12 @@ const MessagePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/proxy');
+        const session = await getTokens();
+        const response = await fetch('/api/proxy', {
+          headers: {
+            Authorization: `Bearer ${session.idToken}`,
+          },
+        });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -43,4 +51,4 @@ const MessagePage = () => {
   );
 };
 
-export default MessagePage;
+export default withAuthenticator(MessagePage);
