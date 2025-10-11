@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { getTokens } from 'aws-amplify/auth';
+import { fetchAuthSession } from 'aws-amplify/auth';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 
@@ -13,10 +13,10 @@ const MessagePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const session = await getTokens();
+        const session = await fetchAuthSession();
         const response = await fetch('/api/proxy', {
           headers: {
-            Authorization: `Bearer ${session.idToken}`,
+            Authorization: `Bearer ${session.tokens?.idToken}`,
           },
         });
         if (!response.ok) {
