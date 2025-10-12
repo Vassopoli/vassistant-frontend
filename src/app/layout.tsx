@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "@/components/Footer";
 import HeaderClient from "@/components/HeaderClient";
 import AmplifyClientInitializer from "@/utils/AmplifyClientInitializer";
+import AuthenticatorProvider from "@/utils/AuthenticatorProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,11 +22,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AmplifyClientInitializer>
-          <div className="flex flex-col min-h-screen">
-            <HeaderClient />
-            <main className="flex-grow">{children}</main>
-            <Footer />
-          </div>
+          <AuthenticatorProvider>
+            <div className="flex flex-col min-h-screen">
+              <HeaderClient />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+            </div>
+          </AuthenticatorProvider>
         </AmplifyClientInitializer>
       </body>
     </html>
