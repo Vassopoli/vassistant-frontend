@@ -1,7 +1,10 @@
-import Auth from "@/components/Auth";
+"use client";
+import MainContent from "@/components/MainContent";
+import { withAuthenticator } from "@aws-amplify/ui-react";
+import "@aws-amplify/ui-react/styles.css";
 
-export default function Home() {
-  return (
-    <Auth />
-  );
+function Home({ signOut, user }: { signOut?: () => void; user?: any }) {
+  return <MainContent signOut={signOut} user={user} />;
 }
+
+export default withAuthenticator(Home);
