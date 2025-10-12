@@ -20,9 +20,12 @@ const MessagePage = () => {
           },
         });
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          const errorText = await response.text();
+          alert(`Error Response: ${errorText}`);
+          throw new Error(`Network response was not ok: ${response.status}`);
         }
         const jsonData = await response.json();
+        alert("API Response: " + JSON.stringify(jsonData));
         setData(jsonData);
       } catch (error) {
         setError(error as Error);
