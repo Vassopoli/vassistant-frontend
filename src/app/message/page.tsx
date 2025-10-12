@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
+import Chat from '@/components/Chat';
 
-const MessagePage = () => {
+const MessagePage = ({ user }: { user?: any }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -36,18 +37,11 @@ const MessagePage = () => {
   }, []);
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4" style={{ height: 'calc(100vh - 200px)' }}>
       <h1 className="text-2xl font-bold">Message Page</h1>
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error.message}</p>}
-      {data && (
-        <div>
-          <h2 className="text-xl font-semibold mt-4">Fetched Data:</h2>
-          <pre className="bg-gray-100 p-4 rounded-md mt-2">
-            {JSON.stringify(data, null, 2)}
-          </pre>
-        </div>
-      )}
+      {data && user && <Chat user={user} initialData={data} />}
     </div>
   );
 };
