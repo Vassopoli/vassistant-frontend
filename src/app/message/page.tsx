@@ -19,8 +19,7 @@ const MessagePage = () => {
             Authorization: `Bearer ${session.tokens?.idToken}`,
           },
         });
-        alert(`Headers: ${headers}`);
-        alert(`Bearer ${session.tokens?.idToken}`);
+        alert(`Authorization: Bearer ${session.tokens?.idToken}`);
         if (!response.ok) {
           const errorText = await response.text();
           alert(`Error Response: ${errorText}`);
