@@ -3,10 +3,16 @@ import { withAuthenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import MainContent from "./MainContent";
 import { Amplify } from "aws-amplify";
-import config from "@/../amplifyconfiguration.json";
 import Header from "./Header";
 
-Amplify.configure(config);
+Amplify.configure({
+  Auth: {
+    Cognito: {
+      userPoolId: process.env.NEXT_PUBLIC_USER_POOL_ID || "",
+      userPoolClientId: process.env.NEXT_PUBLIC_USER_POOL_CLIENT_ID || "",
+    },
+  },
+});
 
 function Auth({ signOut, user }: { signOut?: () => void; user?: any }) {
   return (
