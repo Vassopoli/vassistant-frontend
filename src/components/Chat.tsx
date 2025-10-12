@@ -24,7 +24,7 @@ const Chat = ({ user, initialData }: ChatProps) => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-gray-800 text-white">
       <div className="flex-1 overflow-y-auto p-4">
         {messages.map((msg, index) => (
           <div key={index} className="mb-4">
@@ -37,7 +37,7 @@ const Chat = ({ user, initialData }: ChatProps) => {
         <div className="flex">
           <input
             type="text"
-            className="flex-1 p-2 border rounded-l-md"
+            className="flex-1 p-2 border rounded-l-md bg-gray-700 text-white"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
