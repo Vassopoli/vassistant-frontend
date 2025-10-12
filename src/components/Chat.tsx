@@ -13,7 +13,7 @@ interface ChatProps {
 }
 
 const Chat = ({ user, initialData }: ChatProps) => {
-  const [messages, setMessages] = useState<Message[]>(initialData ? [{ username: initialData.username, text: JSON.stringify(initialData, null, 2) }] : []);
+  const [messages, setMessages] = useState<Message[]>(initialData ? [{ username: initialData.username, text: initialData.content }] : []);
   const [newMessage, setNewMessage] = useState('');
 
   const handleSendMessage = () => {
