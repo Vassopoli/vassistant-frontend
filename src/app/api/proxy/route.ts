@@ -25,7 +25,8 @@ const handler = async (request: NextRequest) => {
       requestOptions.body = await request.text();
     }
 
-    const response = await fetch(apiEndpoint, requestOptions);
+    const fullApiUrl = `${apiEndpoint}/default/VassistantBackendProxy`;
+    const response = await fetch(fullApiUrl, requestOptions);
 
     const data = await response.json();
     return NextResponse.json(data, { status: response.status });
