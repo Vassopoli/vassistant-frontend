@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
+import HeaderClient from "@/components/HeaderClient";
 import AmplifyClientInitializer from "@/utils/AmplifyClientInitializer";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <AmplifyClientInitializer>
           <div className="flex flex-col min-h-screen">
+            <HeaderClient />
             <main className="flex-grow">{children}</main>
             <Footer />
           </div>
