@@ -37,7 +37,7 @@ const Chat = ({ user, initialData }: ChatProps) => {
         <div className="flex">
           <input
             type="text"
-            className="flex-1 p-2 border rounded-l-md"
+            className="flex-1 p-2 border rounded-l-md text-black"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
