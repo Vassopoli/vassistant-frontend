@@ -22,7 +22,7 @@ const MessageClient = ({ user }: { user?: any }) => {
         });
         if (!response.ok) {
           const errorText = await response.text();
-          throw new Error(`Network response was not ok: ${response.status}`);
+          throw new Error(`Network response was not ok: ${response.status} ${errorText}`);
         }
         const jsonData = await response.json();
         setData(jsonData);
