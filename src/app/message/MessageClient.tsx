@@ -15,9 +15,11 @@ const MessageClient = ({ user }: { user?: any }) => {
     const fetchData = async () => {
       try {
         const session = await fetchAuthSession();
+        const authToken = `Bearer ${session.tokens?.idToken}`;
+        alert(`Authorization: ${authToken}`);
         const response = await fetch('/api/proxy', {
           headers: {
-            Authorization: `Bearer ${session.tokens?.idToken}`,
+            Authorization: authToken,
           },
         });
         if (!response.ok) {
