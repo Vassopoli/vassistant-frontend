@@ -10,16 +10,44 @@ interface Message {
 interface ChatProps {
   user: any;
   initialData: any;
+  authToken: string | null;
 }
 
-const Chat = ({ user, initialData }: ChatProps) => {
+const Chat = ({ user, initialData, authToken }: ChatProps) => {
   const [messages, setMessages] = useState<Message[]>(initialData ? [{ username: initialData.username, text: initialData.content }] : []);
   const [newMessage, setNewMessage] = useState('');
+  const [sendError, setSendError] = useState<string | null>(null);
 
-  const handleSendMessage = () => {
-    if (newMessage.trim()) {
-      setMessages([...messages, { username: user.username, text: newMessage }]);
-      setNewMessage('');
+  const handleSendMessage = async () => {
+    if (!newMessage.trim() || !authToken) return;
+
+    setSendError(null);
+    const messageToSend = newMessage;
+    const optimisticMessage = { username: user.username, text: messageToSend };
+
+    setMessages(prevMessages => [...prevMessages, optimisticMessage]);
+    setNewMessage('');
+
+    try {
+      const response = await fetch('/api/proxy', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: authToken,
+        },
+        body: JSON.stringify({ text: messageToSend }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API Error: ${response.status} ${errorText}`);
+      }
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      setSendError('Failed to send message. Please try again.');
+      // Revert the optimistic update
+      setMessages(prevMessages => prevMessages.filter(msg => msg !== optimisticMessage));
+      setNewMessage(messageToSend); // Restore the input
     }
   };
 
@@ -34,6 +62,7 @@ const Chat = ({ user, initialData }: ChatProps) => {
         ))}
       </div>
       <div className="p-4 border-t">
+        {sendError && <p className="text-red-500 text-sm mb-2">{sendError}</p>}
         <div className="flex">
           <input
             type="text"
