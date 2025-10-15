@@ -10,16 +10,18 @@ const MessageClient = ({ user }: { user?: any }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [authToken, setAuthToken] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const session = await fetchAuthSession();
-        const authToken = `Bearer ${session.tokens?.idToken}`;
-        alert(`Authorization: ${authToken}`);
+        const token = `Bearer ${session.tokens?.idToken}`;
+        alert(`Authorization: ${token}`);
+        setAuthToken(token);
         const response = await fetch('/api/proxy', {
           headers: {
-            Authorization: authToken,
+            Authorization: token,
           },
         });
         if (!response.ok) {
@@ -43,7 +45,7 @@ const MessageClient = ({ user }: { user?: any }) => {
       <h1 className="text-2xl font-bold">Message Page</h1>
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error.message}</p>}
-      {data && user && <Chat user={user} initialData={data} />}
+      {data && user && <Chat user={user} initialData={data} authToken={authToken} />}
     </div>
   );
 };
