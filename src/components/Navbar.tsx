@@ -3,11 +3,11 @@
 import Link from 'next/link';
 import { useState } from 'react';
 
-const Navbar = () => {
+const Navbar = ({ signOut, user }: { signOut?: () => void; user?: any }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-gray-800 p-4">
+    <nav className="bg-gray-800 p-4 w-full">
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-white text-lg font-bold">
           <Link href="/">Vassistant</Link>
@@ -23,10 +23,18 @@ const Navbar = () => {
             </svg>
           </button>
         </div>
-        <div className="hidden md:flex space-x-4">
+        <div className="hidden md:flex items-center space-x-4">
           <Link href="/" className="text-gray-300 hover:text-white">Home</Link>
           <Link href="/message" className="text-gray-300 hover:text-white">Message</Link>
           <Link href="/financial" className="text-gray-300 hover:text-white">Financial</Link>
+          {user && (
+            <button
+              onClick={signOut}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Sign Out
+            </button>
+          )}
         </div>
       </div>
       {isOpen && (
@@ -34,6 +42,14 @@ const Navbar = () => {
           <Link href="/" className="block text-gray-300 hover:text-white px-2 py-1">Home</Link>
           <Link href="/message" className="block text-gray-300 hover:text-white px-2 py-1">Message</Link>
           <Link href="/financial" className="block text-gray-300 hover:text-white px-2 py-1">Financial</Link>
+          {user && (
+            <button
+              onClick={signOut}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full mt-2"
+            >
+              Sign Out
+            </button>
+          )}
         </div>
       )}
     </nav>
