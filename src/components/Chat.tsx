@@ -51,6 +51,14 @@ const Chat = ({ user, initialData, authToken }: ChatProps) => {
         const errorText = await response.text();
         throw new Error(`API Error: ${response.status} ${errorText}`);
       }
+
+      const responseData = await response.json();
+      const assistantMessage: Message = {
+        username: responseData.username || 'assistant',
+        content: responseData.content,
+        role: 'assistant',
+      };
+      setMessages(prevMessages => [...prevMessages, assistantMessage]);
     } catch (error) {
       console.error('Failed to send message:', error);
       setSendError('Failed to send message. Please try again.');
