@@ -44,7 +44,7 @@ const Chat = ({ user, initialData, authToken }: ChatProps) => {
           'Content-Type': 'application/json',
           Authorization: authToken,
         },
-        body: JSON.stringify({ text: messageToSend }),
+        body: JSON.stringify({ content: messageToSend }),
       });
 
       if (!response.ok) {
