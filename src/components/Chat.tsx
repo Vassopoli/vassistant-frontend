@@ -53,12 +53,22 @@ const Chat = ({ user, initialData, authToken }: ChatProps) => {
       }
 
       const responseData = await response.json();
-      const assistantMessage: Message = {
-        username: responseData.username || 'assistant',
-        content: responseData.content,
-        role: 'assistant',
-      };
-      setMessages(prevMessages => [...prevMessages, assistantMessage]);
+
+      // The response is an array containing the user message and the assistant's reply.
+      // We need to get the assistant's message, which is the second item.
+      if (Array.isArray(responseData) && responseData.length > 1) {
+        const assistantResponse = responseData[1];
+        const assistantMessage: Message = {
+          username: assistantResponse.username,
+          content: assistantResponse.content,
+          role: assistantResponse.role,
+        };
+        setMessages(prevMessages => [...prevMessages, assistantMessage]);
+      } else {
+        // Handle cases where the response is not as expected
+        console.error('Unexpected API response format:', responseData);
+        throw new Error('Unexpected API response format.');
+      }
     } catch (error) {
       console.error('Failed to send message:', error);
       setSendError('Failed to send message. Please try again.');
