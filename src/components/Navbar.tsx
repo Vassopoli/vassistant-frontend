@@ -39,12 +39,17 @@ const Navbar = ({ signOut, user }: { signOut?: () => void; user?: any }) => {
       </div>
       {isOpen && (
         <div className="md:hidden">
-          <Link href="/" className="block text-gray-300 hover:text-white px-2 py-1">Home</Link>
-          <Link href="/message" className="block text-gray-300 hover:text-white px-2 py-1">Message</Link>
-          <Link href="/financial" className="block text-gray-300 hover:text-white px-2 py-1">Financial</Link>
+          <Link href="/" onClick={() => setIsOpen(false)} className="block text-gray-300 hover:text-white px-2 py-1">Home</Link>
+          <Link href="/message" onClick={() => setIsOpen(false)} className="block text-gray-300 hover:text-white px-2 py-1">Message</Link>
+          <Link href="/financial" onClick={() => setIsOpen(false)} className="block text-gray-300 hover:text-white px-2 py-1">Financial</Link>
           {user && (
             <button
-              onClick={signOut}
+              onClick={() => {
+                if (signOut) {
+                  signOut();
+                }
+                setIsOpen(false);
+              }}
               className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full mt-2"
             >
               Sign Out
