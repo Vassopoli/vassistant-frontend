@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 
 interface Group {
   groupId: string;
@@ -33,12 +34,12 @@ const Financial: React.FC<FinancialProps> = ({ data }) => {
               <td className="py-2 px-4 border-b">{group.groupId}</td>
               <td className="py-2 px-4 border-b">{group.groupName}</td>
               <td className="py-2 px-4 border-b">
-                <a
-                  href={`/financial/group/${group.groupId}`}
+                <Link
+                  href={`/financial/groups/${group.groupId}`}
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 >
                   View Expenses
-                </a>
+                </Link>
               </td>
             </tr>
           ))}
