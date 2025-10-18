@@ -33,8 +33,8 @@ const FinancialClient = () => {
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Failed to fetch data');
+          const errorBody = await response.text();
+          throw new Error(`Failed to fetch data. Status: ${response.status}. Body: ${errorBody}`);
         }
 
         const result = await response.json();
