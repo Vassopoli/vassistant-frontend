@@ -35,7 +35,7 @@ const Financial: React.FC<FinancialProps> = ({ data }) => {
               <td className="py-2 px-4 border-b">{group.groupName}</td>
               <td className="py-2 px-4 border-b">
                 <Link
-                  href={`/financial/groups/${group.groupId}`}
+                  href={`/financial/groups/${encodeURIComponent(group.groupId)}`}
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 >
                   View Expenses
