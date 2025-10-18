@@ -3,8 +3,8 @@
 import React from 'react';
 
 interface Group {
-  group_id: string;
-  group_name: string;
+  groupId: string;
+  groupName: string;
 }
 
 interface FinancialProps {
@@ -22,15 +22,24 @@ const Financial: React.FC<FinancialProps> = ({ data }) => {
       <table className="min-w-full bg-white dark:bg-gray-800">
         <thead>
           <tr>
-            <th className="py-2 px-4 border-b">Group Name</th>
             <th className="py-2 px-4 border-b">Group ID</th>
+            <th className="py-2 px-4 border-b">Group Name</th>
+            <th className="py-2 px-4 border-b">Actions</th>
           </tr>
         </thead>
         <tbody>
           {data.map((group) => (
-            <tr key={group.group_id}>
-              <td className="py-2 px-4 border-b">{group.group_name}</td>
-              <td className="py-2 px-4 border-b">{group.group_id}</td>
+            <tr key={group.groupId}>
+              <td className="py-2 px-4 border-b">{group.groupId}</td>
+              <td className="py-2 px-4 border-b">{group.groupName}</td>
+              <td className="py-2 px-4 border-b">
+                <a
+                  href={`/financial/group/${group.groupId}`}
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                  View Expenses
+                </a>
+              </td>
             </tr>
           ))}
         </tbody>
