@@ -1,10 +1,11 @@
 import React from 'react';
+import FinancialClient from './FinancialClient';
 
 const FinancialPage = () => {
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold">Financial Page</h1>
-      <p>This is the financial page.</p>
+      <h1 className="text-2xl font-bold">Financial Information</h1>
+      <FinancialClient />
     </div>
   );
 };
