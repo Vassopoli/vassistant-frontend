@@ -14,6 +14,7 @@ interface Group {
 const FinancialClient = () => {
   const [data, setData] = useState<Group[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,17 +46,23 @@ const FinancialClient = () => {
         } else {
             setError("An unknown error occurred")
         }
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+    }, []);
 
-  if (error) {
-    return <p>Error: {error}</p>;
-  }
+    if (loading) {
+        return <p>Loading...</p>;
+    }
 
-  return <Financial data={data} />;
-};
+    if (error) {
+        return <p>Error: {error}</p>;
+    }
+
+    return <Financial data={data} />;
+    };
 
 export default withAuthenticator(FinancialClient);

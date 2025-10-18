@@ -32,6 +32,7 @@ const handler = async (request: NextRequest, { params }: { params: { slug: strin
     const data = await response.json();
     return NextResponse.json(data, { status: response.status });
   } catch (error) {
+    console.error('API Proxy Error:', error);
     if (error instanceof Error) {
         return NextResponse.json({ message: `An error occurred: ${error.message}` }, { status: 500 });
     }
