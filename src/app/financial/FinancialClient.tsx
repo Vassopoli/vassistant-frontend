@@ -7,8 +7,8 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 import Financial from '../../components/Financial';
 
 interface Group {
-  group_id: string;
-  group_name: string;
+  groupId: string;
+  groupName: string;
 }
 
 const FinancialClient = () => {
@@ -39,7 +39,11 @@ const FinancialClient = () => {
         }
 
         const result = await response.json();
-        setData(result);
+        if (Array.isArray(result)) {
+          setData(result);
+        } else {
+          setData([]);
+        }
       } catch (err) {
         if (err instanceof Error) {
             setError(err.message);
