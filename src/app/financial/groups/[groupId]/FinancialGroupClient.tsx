@@ -22,10 +22,12 @@ interface FinancialExpense {
   settled: boolean;
 }
 
-export default function FinancialGroupClient({ groupId }: { groupId: string }) {
+export default function FinancialGroupClient({ groupId: encodedGroupId }: { groupId: string }) {
   const [expenses, setExpenses] = useState<FinancialExpense[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const groupId = decodeURIComponent(encodedGroupId);
 
   useEffect(() => {
     const fetchExpenses = async () => {
