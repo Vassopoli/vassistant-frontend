@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { fetchAuthSession } from 'aws-amplify/auth';
+import Link from 'next/link';
 
 interface Participant {
   userId: string;
@@ -73,7 +74,12 @@ export default function FinancialGroupClient({ groupId }: { groupId: string }) {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Group {groupId} Expenses</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Group {groupId} Expenses</h1>
+        <Link href={`/financial/groups/${encodeURIComponent(groupId)}/expenses/new`} className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Add Expense
+        </Link>
+      </div>
       {expenses.length === 0 ? (
         <p>No expenses found for this group.</p>
       ) : (
