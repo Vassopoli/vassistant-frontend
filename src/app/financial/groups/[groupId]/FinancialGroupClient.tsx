@@ -38,7 +38,7 @@ export default function FinancialGroupClient({ groupId: encodedGroupId }: { grou
           throw new Error("Not authenticated");
         }
 
-        const response = await fetch(`/api/financial/groups/${groupId}`, {
+        const response = await fetch(`/api/financial/groups/${encodeURIComponent(groupId)}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
