@@ -11,6 +11,7 @@ interface Participant {
 interface FinancialExpense {
   expenseId: string;
   groupId: string;
+  groupName: string;
   description: string;
   category: string;
   amount: string;
@@ -24,6 +25,7 @@ interface FinancialExpense {
 
 export default function FinancialGroupClient({ groupId }: { groupId: string }) {
   const [expenses, setExpenses] = useState<FinancialExpense[]>([]);
+  const [groupName, setGroupName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,6 +52,9 @@ export default function FinancialGroupClient({ groupId }: { groupId: string }) {
         const result = await response.json();
         if (Array.isArray(result)) {
           setExpenses(result);
+          if (result.length > 0) {
+            setGroupName(result[0].groupName);
+          }
         } else {
             setError("Unexpected response format.");
         }
@@ -73,7 +78,7 @@ export default function FinancialGroupClient({ groupId }: { groupId: string }) {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Group {groupId} Expenses</h1>
+      <h1 className="text-2xl font-bold mb-4">{groupName ? groupName : `Group ${groupId}`} Expenses</h1>
       {expenses.length === 0 ? (
         <p>No expenses found for this group.</p>
       ) : (
