@@ -16,9 +16,12 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const handleParticipantChange = (index, event) => {
+  const handleParticipantChange = (
+    index: number,
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const values = [...participants];
-    values[index][event.target.name] = event.target.value;
+    values[index][event.target.name as "userId" | "share"] = event.target.value;
     setParticipants(values);
   };
 
@@ -26,7 +29,7 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
     setParticipants([...participants, { userId: "", share: "" }]);
   };
 
-  const handleRemoveParticipant = (index) => {
+  const handleRemoveParticipant = (index: number) => {
     const values = [...participants];
     values.splice(index, 1);
     setParticipants(values);
