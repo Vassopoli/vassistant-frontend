@@ -10,8 +10,27 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [paidBy, setPaidBy] = useState("");
+  const [dateTime, setDateTime] = useState("");
+  const [splitType, setSplitType] = useState("");
+  const [participants, setParticipants] = useState([{ userId: "", share: "" }]);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  const handleParticipantChange = (index, event) => {
+    const values = [...participants];
+    values[index][event.target.name] = event.target.value;
+    setParticipants(values);
+  };
+
+  const handleAddParticipant = () => {
+    setParticipants([...participants, { userId: "", share: "" }]);
+  };
+
+  const handleRemoveParticipant = (index) => {
+    const values = [...participants];
+    values.splice(index, 1);
+    setParticipants(values);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +55,9 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
           amount: parseFloat(amount),
           category,
           paidBy,
+          dateTime,
+          splitType,
+          participants,
         }),
       });
 
@@ -105,6 +127,59 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
             onChange={(e) => setPaidBy(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           />
+        </div>
+        <div>
+          <label htmlFor="dateTime" className="block text-sm font-medium text-gray-700">
+            Date and Time
+          </label>
+          <input
+            type="datetime-local"
+            id="dateTime"
+            value={dateTime}
+            onChange={(e) => setDateTime(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          />
+        </div>
+        <div>
+          <label htmlFor="splitType" className="block text-sm font-medium text-gray-700">
+            Split Type
+          </label>
+          <input
+            type="text"
+            id="splitType"
+            value={splitType}
+            onChange={(e) => setSplitType(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Participants</label>
+          {participants.map((participant, index) => (
+            <div key={index} className="flex items-center space-x-2 mt-2">
+              <input
+                type="text"
+                name="userId"
+                placeholder="User ID"
+                value={participant.userId}
+                onChange={(e) => handleParticipantChange(index, e)}
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+              <input
+                type="number"
+                name="share"
+                placeholder="Share"
+                value={participant.share}
+                onChange={(e) => handleParticipantChange(index, e)}
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+              <button type="button" onClick={() => handleRemoveParticipant(index)} className="text-red-600 hover:text-red-900">
+                Remove
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={handleAddParticipant} className="mt-2 text-sm text-indigo-600 hover:text-indigo-900">
+            Add Participant
+          </button>
         </div>
         {error && <div className="text-red-500">{error}</div>}
         <button
