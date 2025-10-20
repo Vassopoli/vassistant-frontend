@@ -16,8 +16,7 @@ interface FinancialExpense {
   category: string;
   amount: string;
   dateTime: string;
-  paidBy: string;
-  user: {
+  paidByUser: {
     showableName: string;
   };
   imageUrl: string;
@@ -129,7 +128,7 @@ export default function FinancialGroupClient({ groupId }: { groupId: string }) {
                 <span className="text-gray-500">{new Date(expense.dateTime).toLocaleDateString()}</span>
               </div>
               <div className="text-lg font-mono">${expense.amount}</div>
-              <div className="text-sm text-gray-600">Paid by: {expense.user.showableName}</div>
+              <div className="text-sm text-gray-600">Paid by: {expense.paidByUser.showableName}</div>
               <div className="text-sm text-gray-600">Category: {expense.category}</div>
             </li>
           ))}
