@@ -1,8 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { fetchAuthSession } from "aws-amplify/auth";
+
+interface User {
+  userId: string;
+  showableName: string;
+}
 
 export default function AddExpenseClient({ groupId }: { groupId: string }) {
   const router = useRouter();
@@ -15,6 +20,41 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
   const [participants, setParticipants] = useState([{ userId: "", share: "" }]);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const session = await fetchAuthSession();
+        const token = session.tokens?.idToken?.toString();
+        if (!token) {
+          throw new Error("Not authenticated");
+        }
+
+        const response = await fetch(`/api/financial/groups/${encodeURIComponent(groupId)}/users`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const errorBody = await response.text();
+          throw new Error(`Failed to fetch users. Status: ${response.status}. Body: ${errorBody}`);
+        }
+
+        const result = await response.json();
+        if (Array.isArray(result)) {
+          setUsers(result);
+        } else {
+          setError("Unexpected response format for users.");
+        }
+      } catch (err: any) {
+        setError(err.message);
+      }
+    };
+
+    fetchUsers();
+  }, [groupId]);
 
   const handleParticipantChange = (
     index: number,
@@ -123,13 +163,19 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
           <label htmlFor="paidBy" className="block text-sm font-medium text-gray-700">
             Paid By
           </label>
-          <input
-            type="text"
+          <select
             id="paidBy"
             value={paidBy}
             onChange={(e) => setPaidBy(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
+          >
+            <option value="">Select a user</option>
+            {users.map((user) => (
+              <option key={user.userId} value={user.userId}>
+                {user.showableName}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label htmlFor="dateTime" className="block text-sm font-medium text-gray-700">
