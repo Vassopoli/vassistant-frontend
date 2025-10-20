@@ -17,7 +17,9 @@ interface FinancialExpense {
   amount: string;
   dateTime: string;
   paidBy: string;
-  showableName: string;
+  user: {
+    showableName: string;
+  };
   imageUrl: string;
   splitType: string;
   participants: Participant[];
@@ -26,6 +28,7 @@ interface FinancialExpense {
 
 export default function FinancialGroupClient({ groupId }: { groupId: string }) {
   const [expenses, setExpenses] = useState<FinancialExpense[]>([]);
+  const [groupName, setGroupName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -65,6 +68,40 @@ export default function FinancialGroupClient({ groupId }: { groupId: string }) {
     fetchExpenses();
   }, [groupId]);
 
+  useEffect(() => {
+    const fetchGroupDetails = async () => {
+      try {
+        const session = await fetchAuthSession();
+        const token = session.tokens?.idToken?.toString();
+        if (!token) {
+          throw new Error("Not authenticated");
+        }
+
+        const response = await fetch(`/api/financial/groups/${encodeURIComponent(groupId)}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const errorBody = await response.text();
+          throw new Error(`Failed to fetch group details. Status: ${response.status}. Body: ${errorBody}`);
+        }
+
+        const result = await response.json();
+        if (result && result.groupName) {
+          setGroupName(result.groupName);
+        } else {
+          setError("Unexpected response format for group details.");
+        }
+      } catch (err: any) {
+        setError(err.message);
+      }
+    };
+
+    fetchGroupDetails();
+  }, [groupId]);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -76,7 +113,7 @@ export default function FinancialGroupClient({ groupId }: { groupId: string }) {
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Group {groupId} Expenses</h1>
+        <h1 className="text-2xl font-bold">Group {groupName || groupId} Expenses</h1>
         <Link href={`/financial/groups/${encodeURIComponent(groupId)}/expenses/new`} className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
           Add Expense
         </Link>
@@ -92,7 +129,7 @@ export default function FinancialGroupClient({ groupId }: { groupId: string }) {
                 <span className="text-gray-500">{new Date(expense.dateTime).toLocaleDateString()}</span>
               </div>
               <div className="text-lg font-mono">${expense.amount}</div>
-              <div className="text-sm text-gray-600">Paid by: {expense.showableName}</div>
+              <div className="text-sm text-gray-600">Paid by: {expense.user.showableName}</div>
               <div className="text-sm text-gray-600">Category: {expense.category}</div>
             </li>
           ))}
