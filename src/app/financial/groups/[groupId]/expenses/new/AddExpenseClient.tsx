@@ -55,7 +55,7 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
         },
         body: JSON.stringify({
           description,
-          amount: parseFloat(amount),
+          amount: parseFloat(amount.replace(",", ".")),
           category,
           paidBy,
           dateTime,
