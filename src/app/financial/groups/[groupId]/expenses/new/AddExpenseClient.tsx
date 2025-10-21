@@ -90,7 +90,7 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
 
   const handleParticipantChange = (
     index: number,
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const values = [...participants];
     values[index][event.target.name as "userId" | "share"] = event.target.value;
@@ -243,14 +243,19 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
           <label className="block text-sm font-medium text-gray-700">Participants</label>
           {participants.map((participant, index) => (
             <div key={index} className="flex items-center space-x-2 mt-2">
-              <input
-                type="text"
+              <select
                 name="userId"
-                placeholder="User ID"
                 value={participant.userId}
                 onChange={(e) => handleParticipantChange(index, e)}
                 className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black"
-              />
+              >
+                <option value="">Select a user</option>
+                {users.map((user) => (
+                  <option key={user.userId} value={user.userId}>
+                    {user.showableName}
+                  </option>
+                ))}
+              </select>
               <input
                 type="number"
                 name="share"
