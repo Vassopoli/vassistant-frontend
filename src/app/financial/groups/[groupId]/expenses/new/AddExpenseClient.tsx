@@ -112,6 +112,18 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
     setSubmitting(true);
     setError(null);
 
+    if (splitType === "PERCENTAGE") {
+      const totalShare = participants.reduce(
+        (sum, p) => sum + parseFloat(p.share || "0"),
+        0
+      );
+      if (totalShare !== 100) {
+        setError("For PERCENTAGE split, the sum of shares must be 100.");
+        setSubmitting(false);
+        return;
+      }
+    }
+
     try {
       const session = await fetchAuthSession();
       const token = session.tokens?.idToken?.toString();
