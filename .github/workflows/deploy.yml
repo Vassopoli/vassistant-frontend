@@ -28,6 +28,7 @@ jobs:
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           API_ENDPOINT: op://Service Account Vault/VassistantApiEndpoint/credential
+          AWS_ACCOUNT_ID: op://Service Account Vault/AWS Account ID/credential
           AWS_ROLE_TO_ASSUME: op://Service Account Vault/IAM Role DeployVassistant/credential
           DOMAIN_NAME: op://Service Account Vault/VassistantDomainName/credential
           HOSTED_ZONE: op://Service Account Vault/VassistantHostedZone/credential
@@ -37,6 +38,7 @@ jobs:
       - name: Add masks for sensitive output
         run: |
           echo "::add-mask::${{ steps.load_secrets.outputs.API_ENDPOINT }}"
+          echo "::add-mask::${{ steps.load_secrets.outputs.AWS_ACCOUNT_ID }}"
           echo "::add-mask::${{ steps.load_secrets.outputs.AWS_ROLE_TO_ASSUME }}"
           echo "::add-mask::${{ steps.load_secrets.outputs.DOMAIN_NAME }}"
           echo "::add-mask::${{ steps.load_secrets.outputs.HOSTED_ZONE }}"
