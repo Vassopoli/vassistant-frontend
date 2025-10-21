@@ -22,6 +22,7 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
   const [submitting, setSubmitting] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [splitTypes, setSplitTypes] = useState<string[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -84,8 +85,39 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
       }
     };
 
+    const fetchCategories = async () => {
+      try {
+        const session = await fetchAuthSession();
+        const token = session.tokens?.idToken?.toString();
+        if (!token) {
+          throw new Error("Not authenticated");
+        }
+
+        const response = await fetch(`/api/financial/expense-categories`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const errorBody = await response.text();
+          throw new Error(`Failed to fetch categories. Status: ${response.status}. Body: ${errorBody}`);
+        }
+
+        const result = await response.json();
+        if (Array.isArray(result)) {
+          setCategories(result);
+        } else {
+          setError("Unexpected response format for categories.");
+        }
+      } catch (err: any) {
+        setError(err.message);
+      }
+    };
+
     fetchUsers();
     fetchSplitTypes();
+    fetchCategories();
   }, [groupId]);
 
   const handleParticipantChange = (
@@ -195,13 +227,19 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
           <label htmlFor="category" className="block text-sm font-medium text-gray-700">
             Category
           </label>
-          <input
-            type="text"
+          <select
             id="category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black"
-          />
+          >
+            <option value="">Select a category</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label htmlFor="paidBy" className="block text-sm font-medium text-gray-700">
