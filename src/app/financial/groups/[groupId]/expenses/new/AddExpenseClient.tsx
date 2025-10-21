@@ -21,6 +21,7 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
+  const [splitTypes, setSplitTypes] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -53,7 +54,38 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
       }
     };
 
+    const fetchSplitTypes = async () => {
+      try {
+        const session = await fetchAuthSession();
+        const token = session.tokens?.idToken?.toString();
+        if (!token) {
+          throw new Error("Not authenticated");
+        }
+
+        const response = await fetch(`/api/financial/expense-split-types`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          const errorBody = await response.text();
+          throw new Error(`Failed to fetch split types. Status: ${response.status}. Body: ${errorBody}`);
+        }
+
+        const result = await response.json();
+        if (Array.isArray(result)) {
+          setSplitTypes(result);
+        } else {
+          setError("Unexpected response format for split types.");
+        }
+      } catch (err: any) {
+        setError(err.message);
+      }
+    };
+
     fetchUsers();
+    fetchSplitTypes();
   }, [groupId]);
 
   const handleParticipantChange = (
@@ -193,13 +225,19 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
           <label htmlFor="splitType" className="block text-sm font-medium text-gray-700">
             Split Type
           </label>
-          <input
-            type="text"
+          <select
             id="splitType"
             value={splitType}
             onChange={(e) => setSplitType(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black"
-          />
+          >
+            <option value="">Select a split type</option>
+            {splitTypes.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Participants</label>
