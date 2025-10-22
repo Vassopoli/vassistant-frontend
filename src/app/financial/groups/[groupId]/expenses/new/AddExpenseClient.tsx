@@ -163,21 +163,26 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
         throw new Error("Not authenticated");
       }
 
+      const expenseData = {
+        description,
+        amount: parseFloat(amount.replace(",", ".")),
+        category,
+        paidBy,
+        dateTime,
+        splitType,
+        participants: participants.map(p => ({
+          userId: p.userId,
+          share: parseFloat(p.share || "0")
+        })),
+      };
+
       const response = await fetch(`/api/financial/groups/${encodeURIComponent(groupId)}/expenses`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          description,
-          amount: parseFloat(amount.replace(",", ".")),
-          category,
-          paidBy,
-          dateTime,
-          splitType,
-          participants,
-        }),
+        body: JSON.stringify(expenseData),
       });
 
       if (!response.ok) {
