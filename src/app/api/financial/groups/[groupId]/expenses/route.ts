@@ -56,7 +56,7 @@ export async function POST(
 
   try {
     const body = await request.json();
-    const { description, amount, category, paidBy, dateTime, participants, splitType } = body;
+    const { title, amount, category, paidBy, dateTime, participants, splitType } = body;
 
     const response = await fetch(`${apiEndpoint}/default/VassistantBackendProxy/financial/groups/${params.groupId}/expenses`, {
       method: 'POST',
@@ -65,7 +65,7 @@ export async function POST(
         Authorization: authorization,
       },
       body: JSON.stringify({
-        description,
+        title,
         amount,
         category,
         paidBy,
