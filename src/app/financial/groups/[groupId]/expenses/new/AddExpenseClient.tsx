@@ -11,7 +11,7 @@ interface User {
 
 export default function AddExpenseClient({ groupId }: { groupId: string }) {
   const router = useRouter();
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
   const [paidBy, setPaidBy] = useState("");
@@ -176,7 +176,7 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
       }
 
       const expenseData = {
-        description,
+        title,
         amount: parseFloat(amount.replace(",", ".")),
         category,
         paidBy,
@@ -215,14 +215,14 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
       <h1 className="text-2xl font-bold mb-4">Add Expense to Group {groupId}</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-            Description
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+            Title
           </label>
           <input
             type="text"
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm text-black"
             required
           />
