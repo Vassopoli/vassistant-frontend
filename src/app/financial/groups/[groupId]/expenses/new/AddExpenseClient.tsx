@@ -144,6 +144,18 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
     setSubmitting(true);
     setError(null);
 
+    if (!paidBy) {
+      setError("Please select a user who paid.");
+      setSubmitting(false);
+      return;
+    }
+
+    if (!splitType) {
+      setError("Please select a split type.");
+      setSubmitting(false);
+      return;
+    }
+
     if (splitType === "PERCENTAGE") {
       const totalShare = participants.reduce(
         (sum, p) => sum + parseFloat(p.share || "0"),
