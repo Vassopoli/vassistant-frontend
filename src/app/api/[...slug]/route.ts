@@ -22,8 +22,8 @@ const handler = async (request: NextRequest, { params }: { params: { slug: strin
     };
 
     if (request.method !== 'GET' && request.body) {
-      const body = await request.json();
-      requestOptions.body = JSON.stringify(body);
+      requestOptions.body = request.body;
+      (requestOptions as any).duplex = 'half';
     }
 
     const path = params.slug.join('/');
