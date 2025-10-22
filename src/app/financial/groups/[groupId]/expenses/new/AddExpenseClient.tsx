@@ -144,6 +144,18 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
     setSubmitting(true);
     setError(null);
 
+    if (!paidBy) {
+      setError("Please select a user who paid.");
+      setSubmitting(false);
+      return;
+    }
+
+    if (!splitType) {
+      setError("Please select a split type.");
+      setSubmitting(false);
+      return;
+    }
+
     if (splitType === "PERCENTAGE") {
       const totalShare = participants.reduce(
         (sum, p) => sum + parseFloat(p.share || "0"),
@@ -163,21 +175,26 @@ export default function AddExpenseClient({ groupId }: { groupId: string }) {
         throw new Error("Not authenticated");
       }
 
+      const expenseData = {
+        description,
+        amount: parseFloat(amount.replace(",", ".")),
+        category,
+        paidBy,
+        dateTime,
+        splitType,
+        participants: participants.map(p => ({
+          userId: p.userId,
+          share: parseFloat(p.share || "0")
+        })),
+      };
+
       const response = await fetch(`/api/financial/groups/${encodeURIComponent(groupId)}/expenses`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          description,
-          amount: parseFloat(amount.replace(",", ".")),
-          category,
-          paidBy,
-          dateTime,
-          splitType,
-          participants,
-        }),
+        body: JSON.stringify(expenseData),
       });
 
       if (!response.ok) {
