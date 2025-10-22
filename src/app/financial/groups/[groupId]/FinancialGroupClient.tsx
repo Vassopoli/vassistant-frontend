@@ -22,7 +22,6 @@ interface FinancialExpense {
   imageUrl: string;
   splitType: string;
   participants: Participant[];
-  settled: boolean;
 }
 
 export default function FinancialGroupClient({ groupId }: { groupId: string }) {
