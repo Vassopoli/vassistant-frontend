@@ -5,6 +5,7 @@ import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { fetchAuthSession } from 'aws-amplify/auth';
 import Financial from '../../components/Financial';
+import LoadingModal from '../../components/LoadingModal';
 
 interface Group {
   groupId: string;
@@ -59,7 +60,7 @@ const FinancialClient = () => {
     }, []);
 
     if (loading) {
-        return <p>Loading...</p>;
+        return <LoadingModal />;
     }
 
     if (error) {
