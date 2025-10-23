@@ -12,7 +12,7 @@ interface Participant {
 interface FinancialExpense {
   expenseId: string;
   groupId: string;
-  description: string;
+  title: string;
   category: string;
   amount: string;
   dateTime: string;
@@ -22,7 +22,6 @@ interface FinancialExpense {
   imageUrl: string;
   splitType: string;
   participants: Participant[];
-  settled: boolean;
 }
 
 export default function ExpenseDetailClient({ groupId, expenseId }: { groupId: string, expenseId: string }) {
@@ -85,7 +84,7 @@ export default function ExpenseDetailClient({ groupId, expenseId }: { groupId: s
       <div className="p-4 border rounded-lg shadow-sm">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <span className="font-semibold">Description:</span> {expense.description}
+            <span className="font-semibold">Title:</span> {expense.title}
           </div>
           <div>
             <span className="font-semibold">Amount:</span> ${expense.amount}
@@ -102,14 +101,11 @@ export default function ExpenseDetailClient({ groupId, expenseId }: { groupId: s
           <div>
             <span className="font-semibold">Split Type:</span> {expense.splitType}
           </div>
-          <div>
-            <span className="font-semibold">Settled:</span> {expense.settled ? 'Yes' : 'No'}
-          </div>
         </div>
         {expense.imageUrl && (
             <div>
               <span className="font-semibold">Image:</span>
-              <img src={expense.imageUrl} alt={expense.description} className="w-full h-auto" />
+              <img src={expense.imageUrl} alt={expense.title} className="w-full h-auto" />
             </div>
           )}
         <div className="mt-4">
