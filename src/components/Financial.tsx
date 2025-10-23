@@ -23,7 +23,6 @@ const Financial: React.FC<FinancialProps> = ({ data }) => {
       <table className="min-w-full bg-white dark:bg-gray-800">
         <thead>
           <tr>
-            <th className="py-2 px-4 border-b">Group ID</th>
             <th className="py-2 px-4 border-b">Group Name</th>
             <th className="py-2 px-4 border-b">Actions</th>
           </tr>
@@ -31,7 +30,6 @@ const Financial: React.FC<FinancialProps> = ({ data }) => {
         <tbody>
           {data.map((group) => (
             <tr key={group.groupId}>
-              <td className="py-2 px-4 border-b">{group.groupId}</td>
               <td className="py-2 px-4 border-b">{group.groupName}</td>
               <td className="py-2 px-4 border-b">
                 <Link
