@@ -12,7 +12,7 @@ interface Participant {
 interface FinancialExpense {
   expenseId: string;
   groupId: string;
-  description: string;
+  title: string;
   category: string;
   amount: string;
   dateTime: string;
@@ -22,7 +22,6 @@ interface FinancialExpense {
   imageUrl: string;
   splitType: string;
   participants: Participant[];
-  settled: boolean;
 }
 
 export default function FinancialGroupClient({ groupId }: { groupId: string }) {
@@ -124,7 +123,7 @@ export default function FinancialGroupClient({ groupId }: { groupId: string }) {
           {expenses.map((expense) => (
             <li key={expense.expenseId} className="p-4 border rounded-lg shadow-sm">
               <div className="flex justify-between">
-                <span className="font-semibold">{expense.description}</span>
+                <span className="font-semibold">{expense.title}</span>
                 <span className="text-gray-500">{new Date(expense.dateTime).toLocaleDateString()}</span>
               </div>
               <div className="text-lg font-mono">${expense.amount}</div>
