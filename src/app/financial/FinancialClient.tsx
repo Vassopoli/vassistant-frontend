@@ -10,6 +10,7 @@ import LoadingModal from '../../components/LoadingModal';
 interface Group {
   groupId: string;
   groupName: string;
+  groupImage: string;
 }
 
 const FinancialClient = () => {
