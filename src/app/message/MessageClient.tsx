@@ -5,6 +5,7 @@ import { fetchAuthSession } from 'aws-amplify/auth';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import Chat from '@/components/Chat';
+import LoadingModal from '@/components/LoadingModal';
 
 const MessageClient = ({ user }: { user?: any }) => {
   const [data, setData] = useState(null);
@@ -43,7 +44,7 @@ const MessageClient = ({ user }: { user?: any }) => {
   return (
     <div className="container mx-auto p-4" style={{ height: 'calc(100vh - 200px)' }}>
       <h1 className="text-2xl font-bold">Message Page</h1>
-      {loading && <p>Loading...</p>}
+      {loading && <LoadingModal />}
       {error && <p>Error: {error.message}</p>}
       {data && user && <Chat user={user} initialData={data} authToken={authToken} />}
     </div>

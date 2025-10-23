@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { fetchAuthSession } from 'aws-amplify/auth';
 import Link from 'next/link';
+import LoadingModal from '@/components/LoadingModal';
 
 interface Participant {
   userId: string;
@@ -101,7 +102,7 @@ export default function FinancialGroupClient({ groupId }: { groupId: string }) {
   }, [groupId]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingModal />;
   }
 
   if (error) {
