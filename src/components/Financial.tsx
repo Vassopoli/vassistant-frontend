@@ -6,6 +6,7 @@ import Link from 'next/link';
 interface Group {
   groupId: string;
   groupName: string;
+  groupImage: string;
 }
 
 interface FinancialProps {
@@ -23,6 +24,7 @@ const Financial: React.FC<FinancialProps> = ({ data }) => {
       <table className="min-w-full bg-white dark:bg-gray-800">
         <thead>
           <tr>
+            <th className="py-2 px-4 border-b"></th>
             <th className="py-2 px-4 border-b">Group Name</th>
             <th className="py-2 px-4 border-b">Actions</th>
           </tr>
@@ -30,6 +32,9 @@ const Financial: React.FC<FinancialProps> = ({ data }) => {
         <tbody>
           {data.map((group) => (
             <tr key={group.groupId}>
+              <td className="py-2 px-4 border-b">
+                <img src={group.groupImage} alt={group.groupName} className="w-10 h-10 rounded-full" />
+              </td>
               <td className="py-2 px-4 border-b">{group.groupName}</td>
               <td className="py-2 px-4 border-b">
                 <Link
