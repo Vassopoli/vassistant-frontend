@@ -130,6 +130,11 @@ export default function FinancialGroupClient({ groupId }: { groupId: string }) {
               <div className="text-lg font-mono">${expense.amount}</div>
               <div className="text-sm text-gray-600">Paid by: {expense.paidByUser.showableName}</div>
               <div className="text-sm text-gray-600">Category: {expense.category}</div>
+              <div className="mt-4">
+                <Link href={`/financial/groups/${encodeURIComponent(groupId)}/expenses/${encodeURIComponent(expense.expenseId)}`} className="text-indigo-600 hover:text-indigo-900">
+                  View Details
+                </Link>
+              </div>
             </li>
           ))}
         </ul>
