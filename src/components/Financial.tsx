@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 
 interface Group {
@@ -14,6 +14,14 @@ interface FinancialProps {
 }
 
 const Financial: React.FC<FinancialProps> = ({ data }) => {
+  useEffect(() => {
+    if (data) {
+      data.forEach(group => {
+        alert(`Group: ${group.groupName}, Image: ${group.groupImage}`);
+      });
+    }
+  }, [data]);
+
   if (!data || data.length === 0) {
     return <p>No financial data available.</p>;
   }
