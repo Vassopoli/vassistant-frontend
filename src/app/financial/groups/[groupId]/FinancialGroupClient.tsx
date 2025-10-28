@@ -26,8 +26,8 @@ interface FinancialExpense {
 }
 
 export default function FinancialGroupClient({ groupId }: { groupId: string }) {
-  const [expenses, setExpenses] = useState<FinancialExpense[]>([]);
   const [groupName, setGroupName] = useState<string | null>(null);
+  const [groupedExpenses, setGroupedExpenses] = useState<Record<string, FinancialExpense[]>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,7 +53,15 @@ export default function FinancialGroupClient({ groupId }: { groupId: string }) {
 
         const result = await response.json();
         if (Array.isArray(result)) {
-          setExpenses(result);
+            const grouped = result.reduce((acc, expense) => {
+                const month = new Date(expense.dateTime).toLocaleString('default', { month: 'long', year: 'numeric' });
+                if (!acc[month]) {
+                    acc[month] = [];
+                }
+                acc[month].push(expense);
+                return acc;
+            }, {} as Record<string, FinancialExpense[]>);
+            setGroupedExpenses(grouped);
         } else {
             setError("Unexpected response format.");
         }
@@ -117,27 +125,34 @@ export default function FinancialGroupClient({ groupId }: { groupId: string }) {
           Add Expense
         </Link>
       </div>
-      {expenses.length === 0 ? (
+      {Object.keys(groupedExpenses).length === 0 ? (
         <p>No expenses found for this group.</p>
       ) : (
-        <ul className="space-y-4">
-          {expenses.map((expense) => (
-            <li key={expense.expenseId} className="p-4 border rounded-lg shadow-sm">
-              <div className="flex justify-between">
-                <span className="font-semibold">{expense.title}</span>
-                <span className="text-gray-500">{new Date(expense.dateTime).toLocaleDateString()}</span>
-              </div>
-              <div className="text-lg font-mono">${expense.amount}</div>
-              <div className="text-sm text-gray-600">Paid by: {expense.paidByUser.showableName}</div>
-              <div className="text-sm text-gray-600">Category: {expense.category}</div>
-              <div className="mt-4">
-                <Link href={`/financial/groups/${encodeURIComponent(groupId)}/expenses/${encodeURIComponent(expense.expenseId)}`} className="text-indigo-600 hover:text-indigo-900">
-                  View Details
-                </Link>
-              </div>
-            </li>
+        <div>
+          {Object.entries(groupedExpenses).map(([month, expenses]) => (
+            <div key={month} className="mb-8">
+              <h2 className="text-xl font-semibold mb-4">{month}</h2>
+              <ul className="space-y-4">
+                {expenses.map((expense) => (
+                  <li key={expense.expenseId} className="p-4 border rounded-lg shadow-sm">
+                    <div className="flex justify-between">
+                      <span className="font-semibold">{expense.title}</span>
+                      <span className="text-gray-500">{new Date(expense.dateTime).toLocaleDateString()}</span>
+                    </div>
+                    <div className="text-lg font-mono">${expense.amount}</div>
+                    <div className="text-sm text-gray-600">Paid by: {expense.paidByUser.showableName}</div>
+                    <div className="text-sm text-gray-600">Category: {expense.category}</div>
+                    <div className="mt-4">
+                      <Link href={`/financial/groups/${encodeURIComponent(groupId)}/expenses/${encodeURIComponent(expense.expenseId)}`} className="text-indigo-600 hover:text-indigo-900">
+                        View Details
+                      </Link>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
